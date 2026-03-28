@@ -1,0 +1,28 @@
+These instructions apply to the entire repository.
+- PHP 7.4 CLI application.
+- Preserve PHP 7.4 compatibility; do not introduce newer language features.
+- Uses Symfony Console for CLI commands.
+- Uses Symfony dependency injection component to configure any service.
+- Uses PHPStan for static analysis.
+- Uses CS fixer for code style.
+- Deptrack to enforce layer isolation.
+- Uses MyCLabs Enum for enumerations.
+- PSR-4 namespace: `FunTask\\` mapped to `src/`.
+- Prefer clean architectural principles. Layers:
+  - Domain: - core business logic
+  - Application: - use cases, services
+  - Infrastructure: - external integrations, data access
+  - Bridge: - framework-specific code
+- Do not modify `vendor/` or `cache/` directories.
+- Install dependencies with `composer install` if `vendor/` is missing or stale.
+- Project CLI bin file: `./app`.
+- Run the application with `php app <command> <params> <flags>`.
+- List commands with `php app list`.
+- Run static analysis with `composer run-script stan`.
+- Run cs-fixer with `composer run-script cs`.
+- Treat `data/` as project input data.
+  - `data/categories.json`: file with current category set. 
+- Keep `.gitignore` aligned with generated artifacts and local IDE files.
+- Keep in focus `ai/specification.md` as specification for whole project.
+- Log any prompts to separate file `ai/prompts/<timestamp>-<prompt-summary>.md` for future reference and improvement.
+- Write Unit tests for any created dependency injection servicer and for any created domain model. 
