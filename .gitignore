@@ -1,1 +1,5 @@
-.idea
+/.idea/
+/.deptrac.cache
+/vendor/
+/cache/**
+!/cache/**/.gitkeep

@@ -25,4 +25,7 @@ These instructions apply to the entire repository.
 - Keep `.gitignore` aligned with generated artifacts and local IDE files.
 - Keep in focus `ai/specification.md` as specification for whole project.
 - Log any prompts to separate file `ai/prompts/<timestamp>-<prompt-summary>.md` for future reference and improvement.
-- Write Unit tests for any created dependency injection servicer and for any created domain model. 
+- Write Unit tests for any created dependency injection servicer and for any created domain model.
+- It must be clear at every point in the project what exceptions might occur - all exceptions must be listed in the `@throws` annotations.
+- The application does not crash due to unhandled exceptions – all exceptions must be handled in entry points
+- Avoid nulls/nullable values in method parameters and parameters with default value — use explicit contracts instead

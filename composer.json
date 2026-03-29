@@ -1,0 +1,46 @@
+{
+    "name": "funtask/categories",
+    "description": "CLI application for category tree processing.",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": "^7.4",
+        "myclabs/php-enum": "^1.8",
+        "symfony/console": "^5.4",
+        "symfony/dependency-injection": "^5.4"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.4",
+        "phpstan/phpstan": "^1.12",
+        "phpunit/phpunit": "^9.6",
+        "qossmic/deptrac": "^0.21.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "FunTask\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "FunTask\\Tests\\": "tests/"
+        }
+    },
+    "bin": [
+        "app"
+    ],
+    "scripts": {
+        "stan": "TMPDIR=cache/tmp COMPOSER_TMP_DIR=cache/tmp phpstan analyse --configuration=phpstan.neon.dist --debug --no-progress",
+        "cs": "TMPDIR=cache/tmp COMPOSER_TMP_DIR=cache/tmp php-cs-fixer fix --config=.php-cs-fixer.php --dry-run --diff",
+        "cs:fix": "TMPDIR=cache/tmp COMPOSER_TMP_DIR=cache/tmp php-cs-fixer fix --config=.php-cs-fixer.php",
+        "deptrac": "TMPDIR=cache/tmp COMPOSER_TMP_DIR=cache/tmp php vendor/qossmic/deptrac/deptrac.php analyse --config-file=deptrac.yaml --cache-file=cache/deptrac/.deptrac.cache",
+        "test": "TMPDIR=cache/tmp COMPOSER_TMP_DIR=cache/tmp phpunit --configuration=phpunit.xml.dist"
+    },
+    "config": {
+        "sort-packages": true,
+        "platform": {
+            "php": "7.4.0"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
