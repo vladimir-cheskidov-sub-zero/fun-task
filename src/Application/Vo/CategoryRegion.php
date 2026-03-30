@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace FunTask\Domain\Category;
+namespace FunTask\Application\Vo;
 
+use FunTask\Domain\Category\Region;
 use MyCLabs\Enum\Enum;
 
 /**
  * @extends Enum<string>
  */
-final class Region extends Enum
+final class CategoryRegion extends Enum
 {
     private const UNSPECIFIED = 'unspecified';
     private const KG = 'kg';
@@ -50,5 +51,10 @@ final class Region extends Enum
         }
 
         return false;
+    }
+
+    public function toDomainRegion(): Region
+    {
+        return Region::from($this->getValue());
     }
 }

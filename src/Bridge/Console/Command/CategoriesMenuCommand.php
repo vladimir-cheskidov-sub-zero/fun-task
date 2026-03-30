@@ -8,7 +8,7 @@ use FunTask\Application\Category\BuildMenu;
 use FunTask\Application\Category\BuildMenuService;
 use FunTask\Application\Dto\Menu;
 use FunTask\Application\Dto\MenuItem;
-use FunTask\Application\Vo\BuildMenuRegion;
+use FunTask\Application\Vo\CategoryRegion;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Exception\InvalidOptionException;
@@ -33,7 +33,7 @@ final class CategoriesMenuCommand extends Command
             ->setDescription('Builds a public menu from a category tree JSON file.')
             ->addArgument('path', InputArgument::REQUIRED, 'Path to a category tree JSON file.')
             ->addOption('adult', null, InputOption::VALUE_REQUIRED, 'Include adult-only categories.', 'false')
-            ->addOption('region', null, InputOption::VALUE_REQUIRED, 'Region code: kg or ru.', BuildMenuRegion::UNSPECIFIED)
+            ->addOption('region', null, InputOption::VALUE_REQUIRED, 'Region code: kg or ru.', CategoryRegion::UNSPECIFIED()->getValue())
             ->addOption('staff', null, InputOption::VALUE_REQUIRED, 'Include staff-only categories.', 'false');
     }
     /**
@@ -90,20 +90,20 @@ final class CategoriesMenuCommand extends Command
      *
      * @throws InvalidOptionException
      */
-    private function normalizeRegionOption($value): BuildMenuRegion
+    private function normalizeRegionOption($value): CategoryRegion
     {
         if (null === $value) {
-            return new BuildMenuRegion(BuildMenuRegion::UNSPECIFIED);
+            return CategoryRegion::UNSPECIFIED();
         }
         if (!is_string($value)) {
             throw new InvalidOptionException('Option "--region" must be one of: kg, ru.');
         }
         $normalizedValue = strtolower(trim($value));
         if ($normalizedValue === '') {
-            return new BuildMenuRegion(BuildMenuRegion::UNSPECIFIED);
+            return CategoryRegion::UNSPECIFIED();
         }
         try {
-            return new BuildMenuRegion($normalizedValue);
+            return CategoryRegion::from($normalizedValue);
         } catch (UnexpectedValueException $exception) {
             throw new InvalidOptionException('Option "--region" must be one of: kg, ru.', 0, $exception);
         }

@@ -42,7 +42,7 @@ final class MenuBuilderVisitorTest extends TestCase
                 $this->createCategory('tv', 'TV', ['menu']),
             ]
         );
-        $visitor = new MenuBuilderVisitor(false, false, new Region(Region::KG));
+        $visitor = new MenuBuilderVisitor(false, false, Region::KG());
         $rootCategory->accept($visitor);
         $menuItems = $visitor->menuItems();
         self::assertSame(['electronics', 'tv'], array_map(static function ($item): string {
@@ -66,7 +66,7 @@ final class MenuBuilderVisitorTest extends TestCase
                 $this->createCategory('visible-ru', 'Visible RU', ['menu', 'region:ru']),
             ]
         );
-        $visitor = new MenuBuilderVisitor(false, false, new Region(Region::KG));
+        $visitor = new MenuBuilderVisitor(false, false, Region::KG());
         $rootCategory->accept($visitor);
         self::assertSame(['visible-kg'], array_map(static function ($item): string {
             return $item->id();
@@ -83,7 +83,7 @@ final class MenuBuilderVisitorTest extends TestCase
                 $this->createCategory('visible-ru', 'Visible RU', ['menu', 'region:ru']),
             ]
         );
-        $visitor = new MenuBuilderVisitor(false, false, new Region(Region::UNSPECIFIED));
+        $visitor = new MenuBuilderVisitor(false, false, Region::UNSPECIFIED());
         $rootCategory->accept($visitor);
         self::assertSame(['visible-kg', 'visible-ru'], array_map(static function ($item): string {
             return $item->id();

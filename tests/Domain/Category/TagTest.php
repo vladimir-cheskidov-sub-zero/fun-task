@@ -21,9 +21,9 @@ final class TagTest extends TestCase
     {
         $tag = new Tag('restricted:18plus');
 
-        self::assertTrue($tag->isOfType(new TagType(TagType::RESTRICTED)));
+        self::assertTrue($tag->isOfType(TagType::RESTRICTED()));
         self::assertTrue($tag->hasParameter());
-        self::assertTrue($tag->restrictedVisibility()->equals(new RestrictedVisibility(RestrictedVisibility::ADULTS_ONLY)));
+        self::assertTrue($tag->restrictedVisibility()->equals(RestrictedVisibility::ADULTS_ONLY()));
     }
 
     public function testConstructorRejectsUnknownType(): void
@@ -56,7 +56,7 @@ final class TagTest extends TestCase
 
     public function testRegionReturnsEnumForRegionalTag(): void
     {
-        self::assertTrue((new Tag('region:kg'))->region()->equals(new Region(Region::KG)));
+        self::assertTrue((new Tag('region:kg'))->region()->equals(Region::KG()));
     }
 
     public function testConstructorRejectsUnspecifiedRegionTagValue(): void

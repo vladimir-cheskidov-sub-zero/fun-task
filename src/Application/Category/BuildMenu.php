@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace FunTask\Application\Category;
 
-use FunTask\Application\Vo\BuildMenuRegion;
+use FunTask\Application\Vo\CategoryRegion;
 
 final class BuildMenu
 {
     private bool $adultEnabled;
     private string $path;
-    private BuildMenuRegion $region;
+    private CategoryRegion $region;
     private bool $staffEnabled;
-    public function __construct(string $path, bool $adultEnabled, BuildMenuRegion $region, bool $staffEnabled)
+    public function __construct(string $path, bool $adultEnabled, CategoryRegion $region, bool $staffEnabled)
     {
         $this->adultEnabled = $adultEnabled;
         $this->path = trim($path);
@@ -27,7 +27,7 @@ final class BuildMenu
     {
         return $this->path;
     }
-    public function region(): BuildMenuRegion
+    public function region(): CategoryRegion
     {
         return $this->region;
     }

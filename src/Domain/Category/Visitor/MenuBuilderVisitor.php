@@ -79,17 +79,17 @@ final class MenuBuilderVisitor implements CategoryVisitor
         if ($this->hasTagValue($category, self::TAG_HIDDEN)) {
             return false;
         }
-        if (!$this->staffEnabled && $this->hasTagValue($category, sprintf('restricted:%s', RestrictedVisibility::STAFF_ONLY))) {
+        if (!$this->staffEnabled && $this->hasTagValue($category, sprintf('restricted:%s', RestrictedVisibility::STAFF_ONLY()->getValue()))) {
             return false;
         }
-        if (!$this->adultEnabled && $this->hasTagValue($category, sprintf('restricted:%s', RestrictedVisibility::ADULTS_ONLY))) {
+        if (!$this->adultEnabled && $this->hasTagValue($category, sprintf('restricted:%s', RestrictedVisibility::ADULTS_ONLY()->getValue()))) {
             return false;
         }
         return $this->isVisibleForRegion($category);
     }
     private function isVisibleForRegion(Category $category): bool
     {
-        if ($this->region->equals(new Region(Region::UNSPECIFIED))) {
+        if ($this->region->equals(Region::UNSPECIFIED())) {
             return true;
         }
         $allowedRegionTag = sprintf('region:%s', $this->region->getValue());

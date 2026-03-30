@@ -8,7 +8,7 @@ use FunTask\Application\Category\BuildMenu;
 use FunTask\Application\Category\BuildMenuService;
 use FunTask\Application\Dto\MenuAssembler;
 use FunTask\Application\Exception\BuildMenuFailed;
-use FunTask\Application\Vo\BuildMenuRegion;
+use FunTask\Application\Vo\CategoryRegion;
 use FunTask\Domain\Category\Category;
 use FunTask\Domain\Category\CategoryHydrator;
 use FunTask\Domain\Category\CategoryId;
@@ -37,7 +37,7 @@ final class BuildMenuServiceTest extends TestCase
             new MenuAssembler()
         );
         $menu = $useCase->execute(
-            new BuildMenu('data/categories.json', false, new BuildMenuRegion(BuildMenuRegion::KG), false)
+            new BuildMenu('data/categories.json', false, CategoryRegion::KG(), false)
         );
         self::assertCount(1, $menu->items());
         self::assertSame('electronics', $menu->items()[0]->id());
@@ -63,7 +63,7 @@ final class BuildMenuServiceTest extends TestCase
         );
         try {
             $useCase->execute(
-                new BuildMenu('missing.json', false, new BuildMenuRegion(BuildMenuRegion::KG), false)
+                new BuildMenu('missing.json', false, CategoryRegion::KG(), false)
             );
             self::fail('Expected application exception was not thrown.');
         } catch (BuildMenuFailed $exception) {
