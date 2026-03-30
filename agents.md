@@ -20,6 +20,8 @@ These instructions apply to the entire repository.
 - List commands with `php app list`.
 - Run static analysis with `composer run-script stan`.
 - Run cs-fixer with `composer run-script cs`.
+- Run deptrack with `composer run-script deptrac`.
+- Run unit tests with `composer run-script test`.
 - Treat `data/` as project input data.
   - `data/categories.json`: file with current category set. 
 - Keep `.gitignore` aligned with generated artifacts and local IDE files.
@@ -29,3 +31,4 @@ These instructions apply to the entire repository.
 - It must be clear at every point in the project what exceptions might occur - all exceptions must be listed in the `@throws` annotations.
 - The application does not crash due to unhandled exceptions – all exceptions must be handled in entry points
 - Avoid nulls/nullable values in method parameters and parameters with default value — use explicit contracts instead
+- Specify generic types in docblocks for collections and other complex types to improve static analysis and code readability.
