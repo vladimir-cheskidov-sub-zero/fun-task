@@ -37,8 +37,14 @@ final class JsonFileCategoryHydrator implements CategoryHydrator
 
         try {
             return $this->hydrateCategory($payload);
+        } catch (CategoryDataStructureIsInvalid $exception) {
+            throw $exception;
         } catch (DomainRuleViolation $exception) {
-            throw CategoryDataStructureIsInvalid::becauseDomainRuleWasViolated($this->filePath, $exception->getMessage());
+            throw CategoryDataStructureIsInvalid::becauseDomainRuleWasViolated(
+                $this->filePath,
+                $exception->getMessage(),
+                $exception
+            );
         }
     }
 
@@ -65,7 +71,11 @@ final class JsonFileCategoryHydrator implements CategoryHydrator
         try {
             $payload = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $exception) {
-            throw CategoryDataJsonIsInvalid::becauseJsonCannotBeDecoded($this->filePath, $exception->getMessage());
+            throw CategoryDataJsonIsInvalid::becauseJsonCannotBeDecoded(
+                $this->filePath,
+                $exception->getMessage(),
+                $exception
+            );
         }
 
         if (!is_array($payload)) {

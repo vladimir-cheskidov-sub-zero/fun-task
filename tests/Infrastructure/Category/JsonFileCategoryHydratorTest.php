@@ -8,6 +8,7 @@ use FunTask\Domain\Category\Category;
 use FunTask\Domain\Category\Exception\CategoryDataFileWasNotFound;
 use FunTask\Domain\Category\Exception\CategoryDataJsonIsInvalid;
 use FunTask\Domain\Category\Exception\CategoryDataStructureIsInvalid;
+use FunTask\Domain\Category\Exception\DomainRuleViolation;
 use FunTask\Infrastructure\Category\JsonFileCategoryHydrator;
 use PHPUnit\Framework\TestCase;
 
@@ -35,22 +36,35 @@ final class JsonFileCategoryHydratorTest extends TestCase
 
     public function testHydrateRejectsInvalidJson(): void
     {
-        $this->expectException(CategoryDataJsonIsInvalid::class);
-
-        (new JsonFileCategoryHydrator(__DIR__ . '/fixtures/invalid-json.json'))->hydrate();
+        try {
+            (new JsonFileCategoryHydrator(__DIR__ . '/fixtures/invalid-json.json'))->hydrate();
+            self::fail('Expected invalid JSON exception was not thrown.');
+        } catch (CategoryDataJsonIsInvalid $exception) {
+            self::assertInstanceOf(\JsonException::class, $exception->getPrevious());
+        }
     }
 
     public function testHydrateRejectsInvalidStructure(): void
     {
-        $this->expectException(CategoryDataStructureIsInvalid::class);
-
-        (new JsonFileCategoryHydrator(__DIR__ . '/fixtures/invalid-structure.json'))->hydrate();
+        try {
+            (new JsonFileCategoryHydrator(__DIR__ . '/fixtures/invalid-structure.json'))->hydrate();
+            self::fail('Expected invalid structure exception was not thrown.');
+        } catch (CategoryDataStructureIsInvalid $exception) {
+            self::assertNull($exception->getPrevious());
+            self::assertSame(
+                'Category data file "' . __DIR__ . '/fixtures/invalid-structure.json" field "children[0]" must be an object.',
+                $exception->getMessage()
+            );
+        }
     }
 
     public function testHydrateWrapsDomainViolationsIntoHydrationException(): void
     {
-        $this->expectException(CategoryDataStructureIsInvalid::class);
-
-        (new JsonFileCategoryHydrator(__DIR__ . '/fixtures/invalid-domain-value.json'))->hydrate();
+        try {
+            (new JsonFileCategoryHydrator(__DIR__ . '/fixtures/invalid-domain-value.json'))->hydrate();
+            self::fail('Expected invalid structure exception was not thrown.');
+        } catch (CategoryDataStructureIsInvalid $exception) {
+            self::assertInstanceOf(DomainRuleViolation::class, $exception->getPrevious());
+        }
     }
 }

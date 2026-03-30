@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace FunTask\Domain\Category\Exception;
 
+use Throwable;
+
 final class CategoryDataStructureIsInvalid extends CategoryHydrationFailed
 {
     public static function becauseRootNodeIsInvalid(string $path): self
@@ -21,8 +23,12 @@ final class CategoryDataStructureIsInvalid extends CategoryHydrationFailed
         return new self(sprintf('Category data file "%s" field "%s" must be %s.', $path, $field, $expectedType));
     }
 
-    public static function becauseDomainRuleWasViolated(string $path, string $message): self
+    public static function becauseDomainRuleWasViolated(string $path, string $message, Throwable $previous): self
     {
-        return new self(sprintf('Category data file "%s" violates domain rules: %s', $path, $message));
+        return new self(
+            sprintf('Category data file "%s" violates domain rules: %s', $path, $message),
+            0,
+            $previous
+        );
     }
 }
