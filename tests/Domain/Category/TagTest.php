@@ -7,6 +7,7 @@ namespace FunTask\Tests\Domain\Category;
 use FunTask\Domain\Category\Exception\TagHasNoParameter;
 use FunTask\Domain\Category\Exception\TagIsNotRegional;
 use FunTask\Domain\Category\Exception\TagParameterIsMissing;
+use FunTask\Domain\Category\Exception\UnknownRegionTagValue;
 use FunTask\Domain\Category\Exception\UnknownTagType;
 use FunTask\Domain\Category\Region;
 use FunTask\Domain\Category\RestrictedVisibility;
@@ -56,5 +57,12 @@ final class TagTest extends TestCase
     public function testRegionReturnsEnumForRegionalTag(): void
     {
         self::assertTrue((new Tag('region:kg'))->region()->equals(new Region(Region::KG)));
+    }
+
+    public function testConstructorRejectsUnspecifiedRegionTagValue(): void
+    {
+        $this->expectException(UnknownRegionTagValue::class);
+
+        new Tag('region:unspecified');
     }
 }

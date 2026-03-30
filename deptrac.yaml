@@ -20,14 +20,30 @@ deptrac:
       collectors:
         - type: directory
           value: src/Bridge/.*
+    - name: Framework
+      collectors:
+        - type: classNameRegex
+          value: '#^Symfony\\Component\\Console\\.*#'
+        - type: classNameRegex
+          value: '#^Symfony\\Component\\DependencyInjection\\.*#'
+    - name: CoreVendor
+      collectors:
+        - type: classNameRegex
+          value: '#^MyCLabs\\Enum\\.*#'
   ruleset:
-    Domain: ~
+    Domain:
+      - MyCLabsEnum
+      - CoreVendor
     Application:
       - Domain
+      - CoreVendor
     Infrastructure:
       - Domain
       - Application
+      - CoreVendor
     Bridge:
       - Domain
       - Application
       - Infrastructure
+      - CoreVendor
+      - Framework

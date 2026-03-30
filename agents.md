@@ -5,7 +5,7 @@ These instructions apply to the entire repository.
 - Uses Symfony dependency injection component to configure any service.
 - Uses PHPStan for static analysis.
 - Uses CS fixer for code style.
-- Deptrack to enforce layer isolation.
+- Uses Deptrac to enforce layer isolation.
 - Uses MyCLabs Enum for enumerations.
 - PSR-4 namespace: `FunTask\\` mapped to `src/`.
 - Prefer clean architectural principles. Layers:

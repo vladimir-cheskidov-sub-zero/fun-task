@@ -11,6 +11,7 @@ use MyCLabs\Enum\Enum;
  */
 final class Region extends Enum
 {
+    public const UNSPECIFIED = 'unspecified';
     public const KG = 'kg';
     public const RU = 'ru';
 }

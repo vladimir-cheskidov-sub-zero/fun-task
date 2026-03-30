@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace FunTask\Bridge\Container;
 
+use FunTask\Application\Category\BuildMenuService;
+use FunTask\Application\Dto\MenuAssembler;
 use FunTask\Bridge\Console\ApplicationFactory;
+use FunTask\Bridge\Console\Command\CategoriesMenuCommand;
 use FunTask\Domain\Category\CategoryHydrator;
 use FunTask\Infrastructure\Category\JsonFileCategoryHydrator;
 use Symfony\Component\Console\Application;
@@ -20,27 +23,33 @@ final class ContainerFactory
     public static function create(): ContainerBuilder
     {
         $container = new ContainerBuilder();
-
         $container
             ->register(ApplicationFactory::class, ApplicationFactory::class)
             ->setPublic(false);
-
         $container
             ->register(JsonFileCategoryHydrator::class, JsonFileCategoryHydrator::class)
-            ->setArgument('$filePath', 'data/categories.json')
             ->setPublic(false);
-
         $container
             ->setAlias(CategoryHydrator::class, JsonFileCategoryHydrator::class)
             ->setPublic(false);
-
+        $container
+            ->register(MenuAssembler::class, MenuAssembler::class)
+            ->setPublic(false);
+        $container
+            ->register(BuildMenuService::class, BuildMenuService::class)
+            ->setArgument('$categoryHydrator', new Reference(CategoryHydrator::class))
+            ->setArgument('$menuAssembler', new Reference(MenuAssembler::class))
+            ->setPublic(false);
+        $container
+            ->register(CategoriesMenuCommand::class, CategoriesMenuCommand::class)
+            ->setArgument('$buildMenuUseCase', new Reference(BuildMenuService::class))
+            ->setPublic(false);
         $container
             ->register(Application::class, Application::class)
             ->setFactory([new Reference(ApplicationFactory::class), 'create'])
+            ->addMethodCall('add', [new Reference(CategoriesMenuCommand::class)])
             ->setPublic(true);
-
         $container->compile();
-
         return $container;
     }
 }

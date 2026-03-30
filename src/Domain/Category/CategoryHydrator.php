@@ -11,5 +11,5 @@ interface CategoryHydrator
     /**
      * @throws CategoryHydrationFailed
      */
-    public function hydrate(): Category;
+    public function hydrate(string $path): Category;
 }

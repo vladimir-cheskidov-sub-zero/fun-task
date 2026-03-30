@@ -21,152 +21,125 @@ use JsonException;
 
 final class JsonFileCategoryHydrator implements CategoryHydrator
 {
-    private string $filePath;
-
-    public function __construct(string $filePath)
-    {
-        $this->filePath = $filePath;
-    }
-
     /**
      * @throws CategoryHydrationFailed
      */
-    public function hydrate(): Category
+    public function hydrate(string $path): Category
     {
-        $payload = $this->decodeFile();
-
+        $payload = $this->decodeFile($path);
         try {
-            return $this->hydrateCategory($payload);
+            return $this->hydrateCategory($payload, $path);
         } catch (CategoryDataStructureIsInvalid $exception) {
             throw $exception;
         } catch (DomainRuleViolation $exception) {
             throw CategoryDataStructureIsInvalid::becauseDomainRuleWasViolated(
-                $this->filePath,
+                $path,
                 $exception->getMessage(),
                 $exception
             );
         }
     }
-
     /**
      * @return array<string, mixed>
      *
      * @throws CategoryHydrationFailed
      */
-    private function decodeFile(): array
+    private function decodeFile(string $path): array
     {
-        if (!file_exists($this->filePath)) {
-            throw CategoryDataFileWasNotFound::becausePathDoesNotExist($this->filePath);
+        if (!file_exists($path)) {
+            throw CategoryDataFileWasNotFound::becausePathDoesNotExist($path);
         }
-
-        if (!is_readable($this->filePath)) {
-            throw CategoryDataFileIsNotReadable::becausePathCannotBeRead($this->filePath);
+        if (!is_readable($path)) {
+            throw CategoryDataFileIsNotReadable::becausePathCannotBeRead($path);
         }
-
-        $contents = file_get_contents($this->filePath);
+        $contents = file_get_contents($path);
         if ($contents === false) {
-            throw CategoryDataFileIsNotReadable::becausePathCannotBeRead($this->filePath);
+            throw CategoryDataFileIsNotReadable::becausePathCannotBeRead($path);
         }
-
         try {
             $payload = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $exception) {
             throw CategoryDataJsonIsInvalid::becauseJsonCannotBeDecoded(
-                $this->filePath,
+                $path,
                 $exception->getMessage(),
                 $exception
             );
         }
-
         if (!is_array($payload)) {
-            throw CategoryDataStructureIsInvalid::becauseRootNodeIsInvalid($this->filePath);
+            throw CategoryDataStructureIsInvalid::becauseRootNodeIsInvalid($path);
         }
-
         return $payload;
     }
-
     /**
      * @param array<string, mixed> $payload
      *
      * @throws DomainRuleViolation
      */
-    private function hydrateCategory(array $payload): Category
+    private function hydrateCategory(array $payload, string $path): Category
     {
         return new Category(
-            new CategoryId($this->requireString($payload, 'id')),
-            new CategoryName($this->requireString($payload, 'name')),
-            $this->hydrateTags($this->requireList($payload, 'tags')),
-            $this->hydrateChildren($this->requireList($payload, 'children'))
+            new CategoryId($this->requireString($payload, 'id', $path)),
+            new CategoryName($this->requireString($payload, 'name', $path)),
+            $this->hydrateTags($this->requireList($payload, 'tags', $path), $path),
+            $this->hydrateChildren($this->requireList($payload, 'children', $path), $path)
         );
     }
-
     /**
      * @param array<int, mixed> $tags
      *
      * @throws DomainRuleViolation
      */
-    private function hydrateTags(array $tags): CategoryTags
+    private function hydrateTags(array $tags, string $path): CategoryTags
     {
         $items = [];
-
         foreach ($tags as $index => $tagValue) {
             if (!is_string($tagValue)) {
                 throw CategoryDataStructureIsInvalid::becauseFieldHasInvalidType(
-                    $this->filePath,
+                    $path,
                     sprintf('tags[%d]', $index),
                     'a string'
                 );
             }
-
             $items[] = new Tag($tagValue);
         }
-
         return new CategoryTags($items);
     }
-
     /**
      * @param array<int, mixed> $children
      *
      * @throws DomainRuleViolation
      */
-    private function hydrateChildren(array $children): ChildCategories
+    private function hydrateChildren(array $children, string $path): ChildCategories
     {
         $items = [];
-
         foreach ($children as $index => $childPayload) {
             if (!is_array($childPayload)) {
                 throw CategoryDataStructureIsInvalid::becauseFieldHasInvalidType(
-                    $this->filePath,
+                    $path,
                     sprintf('children[%d]', $index),
                     'an object'
                 );
             }
-
             /** @var array<string, mixed> $childPayload */
-            $items[] = $this->hydrateCategory($childPayload);
+            $items[] = $this->hydrateCategory($childPayload, $path);
         }
-
         return new ChildCategories($items);
     }
-
     /**
      * @param array<string, mixed> $payload
      *
      * @throws CategoryDataStructureIsInvalid
      */
-    private function requireString(array $payload, string $field): string
+    private function requireString(array $payload, string $field, string $path): string
     {
         if (!array_key_exists($field, $payload)) {
-            throw CategoryDataStructureIsInvalid::becauseFieldIsMissing($this->filePath, $field);
+            throw CategoryDataStructureIsInvalid::becauseFieldIsMissing($path, $field);
         }
-
         if (!is_string($payload[$field])) {
-            throw CategoryDataStructureIsInvalid::becauseFieldHasInvalidType($this->filePath, $field, 'a string');
+            throw CategoryDataStructureIsInvalid::becauseFieldHasInvalidType($path, $field, 'a string');
         }
-
         return $payload[$field];
     }
-
     /**
      * @param array<string, mixed> $payload
      *
@@ -174,16 +147,14 @@ final class JsonFileCategoryHydrator implements CategoryHydrator
      *
      * @throws CategoryDataStructureIsInvalid
      */
-    private function requireList(array $payload, string $field): array
+    private function requireList(array $payload, string $field, string $path): array
     {
         if (!array_key_exists($field, $payload)) {
-            throw CategoryDataStructureIsInvalid::becauseFieldIsMissing($this->filePath, $field);
+            throw CategoryDataStructureIsInvalid::becauseFieldIsMissing($path, $field);
         }
-
         if (!is_array($payload[$field])) {
-            throw CategoryDataStructureIsInvalid::becauseFieldHasInvalidType($this->filePath, $field, 'a list');
+            throw CategoryDataStructureIsInvalid::becauseFieldHasInvalidType($path, $field, 'a list');
         }
-
         return array_values($payload[$field]);
     }
 }
