@@ -10,13 +10,13 @@ use FunTask\Domain\Category\CategoryId;
 use FunTask\Domain\Category\CategoryName;
 use FunTask\Domain\Category\CategoryTags;
 use FunTask\Domain\Category\ChildCategories;
-use FunTask\Domain\Category\Exception\CategoryDataFileIsNotReadable;
-use FunTask\Domain\Category\Exception\CategoryDataFileWasNotFound;
-use FunTask\Domain\Category\Exception\CategoryDataJsonIsInvalid;
-use FunTask\Domain\Category\Exception\CategoryDataStructureIsInvalid;
 use FunTask\Domain\Category\Exception\CategoryHydrationFailed;
 use FunTask\Domain\Category\Exception\DomainRuleViolation;
 use FunTask\Domain\Category\Tag;
+use FunTask\Infrastructure\Category\Exception\CategoryDataFileIsNotReadable;
+use FunTask\Infrastructure\Category\Exception\CategoryDataFileWasNotFound;
+use FunTask\Infrastructure\Category\Exception\CategoryDataJsonIsInvalid;
+use FunTask\Infrastructure\Category\Exception\CategoryDataStructureIsInvalid;
 use JsonException;
 
 final class JsonFileCategoryHydrator implements CategoryHydrator

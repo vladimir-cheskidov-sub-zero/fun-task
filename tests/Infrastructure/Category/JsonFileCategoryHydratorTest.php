@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace FunTask\Tests\Infrastructure\Category;
 
 use FunTask\Domain\Category\Category;
-use FunTask\Domain\Category\Exception\CategoryDataFileWasNotFound;
-use FunTask\Domain\Category\Exception\CategoryDataJsonIsInvalid;
-use FunTask\Domain\Category\Exception\CategoryDataStructureIsInvalid;
 use FunTask\Domain\Category\Exception\DomainRuleViolation;
+use FunTask\Infrastructure\Category\Exception\CategoryDataFileWasNotFound;
+use FunTask\Infrastructure\Category\Exception\CategoryDataJsonIsInvalid;
+use FunTask\Infrastructure\Category\Exception\CategoryDataStructureIsInvalid;
 use FunTask\Infrastructure\Category\JsonFileCategoryHydrator;
 use PHPUnit\Framework\TestCase;
 

@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FunTask\Domain\Category\Exception;
+namespace FunTask\Infrastructure\Category\Exception;
 
+use FunTask\Domain\Category\Exception\CategoryHydrationFailed;
 use Throwable;
 
 final class CategoryDataStructureIsInvalid extends CategoryHydrationFailed
