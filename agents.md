@@ -30,3 +30,6 @@ These instructions apply to the entire repository.
 - The application does not crash due to unhandled exceptions – all exceptions must be handled in entry points
 - Avoid nulls/nullable values in method parameters and parameters with default value — use explicit contracts instead
 - Specify generic types in docblocks for collections and other complex types to improve static analysis and code readability.
+- Follow SOLID principles and clean code practices to ensure maintainability and extensibility of the codebase
+- Follow rule: composition over inheritance — prefer composition and interfaces over class inheritance to promote flexibility and reduce coupling.
+- Follow rule: aggregation over composition — prefer aggregation (holding references to other objects) over composition (creating objects within objects) to promote loose coupling and better separation of concerns.
