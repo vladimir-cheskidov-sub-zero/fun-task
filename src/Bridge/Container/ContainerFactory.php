@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace FunTask\Bridge\Container;
 
 use FunTask\Bridge\Console\ApplicationFactory;
+use FunTask\Domain\Category\CategoryHydrator;
+use FunTask\Infrastructure\Category\JsonFileCategoryHydrator;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\ExceptionInterface;
@@ -21,6 +23,15 @@ final class ContainerFactory
 
         $container
             ->register(ApplicationFactory::class, ApplicationFactory::class)
+            ->setPublic(false);
+
+        $container
+            ->register(JsonFileCategoryHydrator::class, JsonFileCategoryHydrator::class)
+            ->setArgument('$filePath', 'data/categories.json')
+            ->setPublic(false);
+
+        $container
+            ->setAlias(CategoryHydrator::class, JsonFileCategoryHydrator::class)
             ->setPublic(false);
 
         $container

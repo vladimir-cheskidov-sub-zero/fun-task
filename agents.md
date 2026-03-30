@@ -18,10 +18,7 @@ These instructions apply to the entire repository.
 - Project CLI bin file: `./app`.
 - Run the application with `php app <command> <params> <flags>`.
 - List commands with `php app list`.
-- Run static analysis with `composer run-script stan`.
-- Run cs-fixer with `composer run-script cs`.
-- Run deptrack with `composer run-script deptrac`.
-- Run unit tests with `composer run-script test`.
+- Run static analysis without writing in cache.
 - Treat `data/` as project input data.
   - `data/categories.json`: file with current category set. 
 - Keep `.gitignore` aligned with generated artifacts and local IDE files.
@@ -29,6 +26,7 @@ These instructions apply to the entire repository.
 - Log any prompts to separate file `ai/prompts/<timestamp>-<prompt-summary>.md` for future reference and improvement.
 - Write Unit tests for any created dependency injection servicer and for any created domain model.
 - It must be clear at every point in the project what exceptions might occur - all exceptions must be listed in the `@throws` annotations.
+- Exceptions must be with previous exception set where applicable to preserve stack trace and debugging information.
 - The application does not crash due to unhandled exceptions – all exceptions must be handled in entry points
 - Avoid nulls/nullable values in method parameters and parameters with default value — use explicit contracts instead
 - Specify generic types in docblocks for collections and other complex types to improve static analysis and code readability.

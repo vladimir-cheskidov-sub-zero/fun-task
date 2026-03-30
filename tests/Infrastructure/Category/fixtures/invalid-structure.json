@@ -1,0 +1,6 @@
+{
+  "id": "root",
+  "name": "Catalog",
+  "tags": ["root"],
+  "children": ["invalid-child"]
+}
