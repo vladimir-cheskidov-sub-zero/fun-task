@@ -1,6 +1,9 @@
 <?php
+
 declare(strict_types=1);
+
 namespace FunTask\Domain\Category;
+
 use FunTask\Domain\Category\Exception\TagFormatIsInvalid;
 use FunTask\Domain\Category\Exception\TagHasNoParameter;
 use FunTask\Domain\Category\Exception\TagIsNotRegional;
@@ -11,6 +14,7 @@ use FunTask\Domain\Category\Exception\UnexpectedTagParameter;
 use FunTask\Domain\Category\Exception\UnknownRegionTagValue;
 use FunTask\Domain\Category\Exception\UnknownRestrictedTagValue;
 use FunTask\Domain\Category\Exception\UnknownTagType;
+
 final class Tag
 {
     private string $value;

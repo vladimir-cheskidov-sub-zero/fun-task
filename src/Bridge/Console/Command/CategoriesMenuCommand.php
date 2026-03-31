@@ -6,8 +6,8 @@ namespace FunTask\Bridge\Console\Command;
 
 use FunTask\Application\Category\BuildMenu;
 use FunTask\Application\Category\BuildMenuService;
-use FunTask\Application\Dto\Menu;
-use FunTask\Application\Dto\MenuItem;
+use FunTask\Application\Dto\MenuDto;
+use FunTask\Application\Dto\MenuItemDto;
 use FunTask\Application\Vo\CategoryRegion;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
@@ -111,10 +111,10 @@ final class CategoriesMenuCommand extends Command
     /**
      * @return string[]
      */
-    private function renderMenu(Menu $menu): array
+    private function renderMenu(MenuDto $menu): array
     {
         $lines = [];
-        foreach ($menu->items() as $item) {
+        foreach ($menu->items as $item) {
             foreach ($this->renderMenuItem($item, 0) as $line) {
                 $lines[] = $line;
             }
@@ -124,10 +124,10 @@ final class CategoriesMenuCommand extends Command
     /**
      * @return string[]
      */
-    private function renderMenuItem(MenuItem $item, int $depth): array
+    private function renderMenuItem(MenuItemDto $item, int $depth): array
     {
-        $lines = [sprintf('%s- %s', str_repeat('  ', $depth), $item->name())];
-        foreach ($item->children() as $child) {
+        $lines = [sprintf('%s- %s', str_repeat('  ', $depth), $item->name)];
+        foreach ($item->children as $child) {
             foreach ($this->renderMenuItem($child, $depth + 1) as $line) {
                 $lines[] = $line;
             }

@@ -32,7 +32,7 @@
         "stan": "TMPDIR=cache/tmp COMPOSER_TMP_DIR=cache/tmp phpstan analyse --configuration=phpstan.neon.dist --debug --no-progress",
         "cs": "TMPDIR=cache/tmp COMPOSER_TMP_DIR=cache/tmp php-cs-fixer fix --config=.php-cs-fixer.php --dry-run --diff",
         "cs:fix": "TMPDIR=cache/tmp COMPOSER_TMP_DIR=cache/tmp php-cs-fixer fix --config=.php-cs-fixer.php",
-        "deptrac": "TMPDIR=cache/tmp COMPOSER_TMP_DIR=cache/tmp php vendor/qossmic/deptrac/deptrac.php analyse --config-file=deptrac.yaml --no-progress --no-cache --formatter=json | php -r '$report = json_decode(stream_get_contents(STDIN), true); if (!is_array($report) || !isset($report[\"Report\"])) { fwrite(STDERR, \"Invalid Deptrac JSON output\\n\"); exit(1); } foreach ($report[\"Report\"] as $name => $count) { if ($name === \"Allowed\") { continue; } if ((int) $count !== 0) { fwrite(STDERR, sprintf(\"Deptrac reported %s=%d\\n\", $name, $count)); exit(1); } }'",
+        "deptrac": "TMPDIR=cache/tmp COMPOSER_TMP_DIR=cache/tmp php vendor/qossmic/deptrac/deptrac.php analyse --config-file=deptrac.yaml --no-progress --no-cache",
         "test": "TMPDIR=cache/tmp COMPOSER_TMP_DIR=cache/tmp phpunit --configuration=phpunit.xml.dist"
     },
     "config": {

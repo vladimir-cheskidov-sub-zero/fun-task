@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FunTask\Application\Category;
 
 use FunTask\Application\Vo\CategoryRegion;
+use FunTask\Domain\Category\Region;
 
 final class BuildMenu
 {
@@ -27,9 +28,9 @@ final class BuildMenu
     {
         return $this->path;
     }
-    public function region(): CategoryRegion
+    public function region(): Region
     {
-        return $this->region;
+        return $this->region->toDomainRegion();
     }
     public function staffEnabled(): bool
     {

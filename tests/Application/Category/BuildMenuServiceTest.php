@@ -39,9 +39,9 @@ final class BuildMenuServiceTest extends TestCase
         $menu = $useCase->execute(
             new BuildMenu('data/categories.json', false, CategoryRegion::KG(), false)
         );
-        self::assertCount(1, $menu->items());
-        self::assertSame('electronics', $menu->items()[0]->id());
-        self::assertSame('Electronics', $menu->items()[0]->name());
+        self::assertCount(1, $menu->items);
+        self::assertSame('electronics', $menu->items[0]->id);
+        self::assertSame('Electronics', $menu->items[0]->name);
     }
     public function testExecuteMapsDomainExceptionsToApplicationException(): void
     {

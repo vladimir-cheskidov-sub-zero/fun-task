@@ -11,25 +11,29 @@ final class MenuAssembler
     /**
      * @param BuiltMenuItem[] $menuItems
      */
-    public function assemble(array $menuItems): Menu
+    public function toMenuDto(array $menuItems): MenuDto
     {
-        return new Menu($this->assembleItems($menuItems));
+        $menu = new MenuDto();
+        $menu->items = $this->toItemDtos($menuItems);
+
+        return $menu;
     }
     /**
      * @param BuiltMenuItem[] $menuItems
      *
-     * @return MenuItem[]
+     * @return MenuItemDto[]
      */
-    private function assembleItems(array $menuItems): array
+    private function toItemDtos(array $menuItems): array
     {
         $items = [];
         foreach ($menuItems as $menuItem) {
-            $items[] = new MenuItem(
-                $menuItem->id(),
-                $menuItem->name(),
-                $this->assembleItems($menuItem->children())
-            );
+            $item = new MenuItemDto();
+            $item->id = $menuItem->id();
+            $item->name = $menuItem->name();
+            $item->children = $this->toItemDtos($menuItem->children());
+            $items[] = $item;
         }
+
         return $items;
     }
 }

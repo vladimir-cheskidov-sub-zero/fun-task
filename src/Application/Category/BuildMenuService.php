@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FunTask\Application\Category;
 
-use FunTask\Application\Dto\Menu;
+use FunTask\Application\Dto\MenuDto;
 use FunTask\Application\Dto\MenuAssembler;
 use FunTask\Application\Exception\BuildMenuFailed;
 use FunTask\Domain\Category\CategoryHydrator;
@@ -23,12 +23,12 @@ final class BuildMenuService
     /**
      * @throws BuildMenuFailed
      */
-    public function execute(BuildMenu $query): Menu
+    public function execute(BuildMenu $query): MenuDto
     {
         $visitor = new MenuBuilderVisitor(
             $query->adultEnabled(),
             $query->staffEnabled(),
-            $query->region()->toDomainRegion()
+            $query->region()
         );
         try {
             $categoryTree = $this->categoryHydrator->hydrate($query->path());
@@ -36,6 +36,6 @@ final class BuildMenuService
         } catch (DomainRuleViolation $exception) {
             throw BuildMenuFailed::becauseDomainRuleWasViolated($query->path(), $exception);
         }
-        return $this->menuAssembler->assemble($visitor->menuItems());
+        return $this->menuAssembler->toMenuDto($visitor->menuItems());
     }
 }
