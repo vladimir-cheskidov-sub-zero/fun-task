@@ -44,9 +44,11 @@ final class CategoriesMenuCommandTest extends TestCase
         $exitCode = $commandTester->execute([
             'path' => 'data/categories.json',
         ]);
+
         self::assertSame(0, $exitCode);
         self::assertSame("- Visible KG\n- Visible RU\n", $commandTester->getDisplay());
     }
+
     public function testExecutePrintsMenuTree(): void
     {
         $command = new CategoriesMenuCommand(
@@ -78,9 +80,11 @@ final class CategoriesMenuCommandTest extends TestCase
             '--region' => 'kg',
             '--staff' => 'false',
         ]);
+
         self::assertSame(0, $exitCode);
         self::assertSame("- Electronics\n  - Smartphones\n", $commandTester->getDisplay());
     }
+
     public function testExecuteRejectsUnsupportedRegionOption(): void
     {
         $command = new CategoriesMenuCommand(
@@ -90,6 +94,7 @@ final class CategoriesMenuCommandTest extends TestCase
             )
         );
         $commandTester = new CommandTester($command);
+
         $this->expectException(InvalidOptionException::class);
         $commandTester->execute([
             'path' => 'data/categories.json',
@@ -98,20 +103,93 @@ final class CategoriesMenuCommandTest extends TestCase
             '--staff' => 'false',
         ]);
     }
+
+    public function testExecuteRejectsEmptyRegionOption(): void
+    {
+        $command = new CategoriesMenuCommand(
+            new BuildMenuService(
+                $this->createHydrator($this->createCategory('root', 'Catalog', ['root'])),
+                new MenuAssembler()
+            )
+        );
+        $commandTester = new CommandTester($command);
+
+        $this->expectException(InvalidOptionException::class);
+        $this->expectExceptionMessage('Option "--region" must be one of: kg, ru.');
+        $commandTester->execute([
+            'path' => 'data/categories.json',
+            '--adult' => 'false',
+            '--region' => '',
+            '--staff' => 'false',
+        ]);
+    }
+
+    public function testExecuteRejectsUnspecifiedRegionOption(): void
+    {
+        $command = new CategoriesMenuCommand(
+            new BuildMenuService(
+                $this->createHydrator($this->createCategory('root', 'Catalog', ['root'])),
+                new MenuAssembler()
+            )
+        );
+        $commandTester = new CommandTester($command);
+
+        $this->expectException(InvalidOptionException::class);
+        $this->expectExceptionMessage('Option "--region" must be one of: kg, ru.');
+        $commandTester->execute([
+            'path' => 'data/categories.json',
+            '--adult' => 'false',
+            '--region' => 'unspecified',
+            '--staff' => 'false',
+        ]);
+    }
+
+    public function testExecuteSanitizesControlCharactersInRenderedOutput(): void
+    {
+        $command = new CategoriesMenuCommand(
+            new BuildMenuService(
+                $this->createHydrator(
+                    $this->createCategory(
+                        'root',
+                        'Catalog',
+                        ['root'],
+                        [
+                            $this->createCategory('bad-id', "Bad\nName\x1B", ['menu']),
+                        ]
+                    )
+                ),
+                new MenuAssembler()
+            )
+        );
+        $commandTester = new CommandTester($command);
+        $exitCode = $commandTester->execute([
+            'path' => 'data/categories.json',
+            '--adult' => 'false',
+            '--region' => 'kg',
+            '--staff' => 'false',
+        ]);
+
+        self::assertSame(0, $exitCode);
+        self::assertSame("- Bad\\x0AName\\x1B\n", $commandTester->getDisplay());
+    }
+
     private function createHydrator(Category $category): CategoryHydrator
     {
         return new class ($category) implements CategoryHydrator {
             private Category $category;
+
             public function __construct(Category $category)
             {
                 $this->category = $category;
             }
+
             public function hydrate(string $path): Category
             {
                 return $this->category;
             }
         };
     }
+
     /**
      * @param string[] $tags
      * @param Category[] $children

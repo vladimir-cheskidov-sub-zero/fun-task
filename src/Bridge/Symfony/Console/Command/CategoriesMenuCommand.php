@@ -6,9 +6,12 @@ namespace FunTask\Bridge\Symfony\Console\Command;
 
 use FunTask\Application\Dto\MenuDto;
 use FunTask\Application\Dto\MenuItemDto;
+use FunTask\Application\Exception\BuildMenuFailed;
+use FunTask\Application\Exception\CategoryTreePathCannotBeEmpty;
 use FunTask\Application\Service\BuildMenu;
 use FunTask\Application\Service\BuildMenuService;
 use FunTask\Application\Vo\CategoryRegion;
+use FunTask\Bridge\Symfony\Console\ConsoleOutputEscaper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Exception\InvalidOptionException;
@@ -22,21 +25,26 @@ final class CategoriesMenuCommand extends Command
 {
     protected static $defaultName = 'categories:menu';
     private BuildMenuService $buildMenuUseCase;
+
     public function __construct(BuildMenuService $buildMenuUseCase)
     {
         parent::__construct();
         $this->buildMenuUseCase = $buildMenuUseCase;
     }
+
     protected function configure(): void
     {
         $this
             ->setDescription('Builds a public menu from a category tree JSON file.')
             ->addArgument('path', InputArgument::REQUIRED, 'Path to a category tree JSON file.')
             ->addOption('adult', null, InputOption::VALUE_REQUIRED, 'Include adult-only categories.', 'false')
-            ->addOption('region', null, InputOption::VALUE_REQUIRED, 'Region code: kg or ru.', CategoryRegion::UNSPECIFIED()->getValue())
+            ->addOption('region', null, InputOption::VALUE_REQUIRED, 'Region code: kg or ru.')
             ->addOption('staff', null, InputOption::VALUE_REQUIRED, 'Include staff-only categories.', 'false');
     }
+
     /**
+     * @throws BuildMenuFailed
+     * @throws CategoryTreePathCannotBeEmpty
      * @throws InvalidArgumentException
      * @throws InvalidOptionException
      */
@@ -46,6 +54,7 @@ final class CategoriesMenuCommand extends Command
         if (!is_string($path)) {
             throw new InvalidArgumentException('Argument "path" must be a string.');
         }
+
         $query = new BuildMenu(
             $path,
             $this->normalizeBooleanOption('adult', $input->getOption('adult')),
@@ -53,11 +62,14 @@ final class CategoriesMenuCommand extends Command
             $this->normalizeBooleanOption('staff', $input->getOption('staff'))
         );
         $menu = $this->buildMenuUseCase->execute($query);
+
         foreach ($this->renderMenu($menu) as $line) {
             $output->writeln($line);
         }
+
         return Command::SUCCESS;
     }
+
     /**
      * @param mixed $value
      *
@@ -68,9 +80,11 @@ final class CategoriesMenuCommand extends Command
         if (is_bool($value)) {
             return $value;
         }
+
         if (!is_string($value)) {
             throw new InvalidOptionException(sprintf('Option "--%s" must be a boolean-like value.', $optionName));
         }
+
         $normalizedValue = strtolower(trim($value));
         $allowedValues = [
             '1' => true,
@@ -78,13 +92,16 @@ final class CategoriesMenuCommand extends Command
             'true' => true,
             'false' => false,
         ];
+
         if (!array_key_exists($normalizedValue, $allowedValues)) {
             throw new InvalidOptionException(
                 sprintf('Option "--%s" must be one of: true, false, 1, 0.', $optionName)
             );
         }
+
         return $allowedValues[$normalizedValue];
     }
+
     /**
      * @param mixed $value
      *
@@ -95,19 +112,29 @@ final class CategoriesMenuCommand extends Command
         if (null === $value) {
             return CategoryRegion::UNSPECIFIED();
         }
+
         if (!is_string($value)) {
             throw new InvalidOptionException('Option "--region" must be one of: kg, ru.');
         }
+
         $normalizedValue = strtolower(trim($value));
         if ($normalizedValue === '') {
-            return CategoryRegion::UNSPECIFIED();
+            throw new InvalidOptionException('Option "--region" must be one of: kg, ru.');
         }
+
         try {
-            return CategoryRegion::from($normalizedValue);
+            $region = CategoryRegion::from($normalizedValue);
         } catch (UnexpectedValueException $exception) {
             throw new InvalidOptionException('Option "--region" must be one of: kg, ru.', 0, $exception);
         }
+
+        if (!$region->equalsAny(CategoryRegion::KG(), CategoryRegion::RU())) {
+            throw new InvalidOptionException('Option "--region" must be one of: kg, ru.');
+        }
+
+        return $region;
     }
+
     /**
      * @return string[]
      */
@@ -119,19 +146,22 @@ final class CategoriesMenuCommand extends Command
                 $lines[] = $line;
             }
         }
+
         return $lines;
     }
+
     /**
      * @return string[]
      */
     private function renderMenuItem(MenuItemDto $item, int $depth): array
     {
-        $lines = [sprintf('%s- %s', str_repeat('  ', $depth), $item->name)];
+        $lines = [sprintf('%s- %s', str_repeat('  ', $depth), ConsoleOutputEscaper::escapeInline($item->name))];
         foreach ($item->children as $child) {
             foreach ($this->renderMenuItem($child, $depth + 1) as $line) {
                 $lines[] = $line;
             }
         }
+
         return $lines;
     }
 }

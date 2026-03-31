@@ -53,10 +53,10 @@ final class EntryPointRunner
     private function formatErrorMessage(\Throwable $throwable): string
     {
         if (($this->verbosityResolver)()) {
-            return sprintf("Application failed:\n%s", (string) $throwable);
+            return sprintf("Application failed:\n%s", ConsoleOutputEscaper::sanitizeMultiline((string) $throwable));
         }
 
-        return sprintf('Application failed: %s', $throwable->getMessage());
+        return sprintf('Application failed: %s', ConsoleOutputEscaper::sanitizeInline($throwable->getMessage()));
     }
 
     /**

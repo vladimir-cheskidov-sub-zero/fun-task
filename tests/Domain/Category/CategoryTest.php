@@ -17,7 +17,6 @@ use FunTask\Domain\Category\Exception\DuplicateCategoryTreeId;
 use FunTask\Domain\Category\Region;
 use FunTask\Domain\Category\RestrictedVisibility;
 use FunTask\Domain\Category\Tag;
-use FunTask\Domain\Category\TagType;
 use PHPUnit\Framework\TestCase;
 
 final class CategoryTest extends TestCase
@@ -54,12 +53,22 @@ final class CategoryTest extends TestCase
         $this->createCategory('electronics', 'Electronics', [new Tag('menu')])->addTag(new Tag('menu'));
     }
 
-    public function testHasTagTypeReturnsTrueWhenMatchingTagExists(): void
+    public function testIsPromotedReturnsTrueOnlyForPromoTaggedCategory(): void
     {
-        $category = $this->createCategory('electronics', 'Electronics', [new Tag('menu'), new Tag('hidden')]);
+        self::assertTrue($this->createCategory('promo', 'Promo', [new Tag('promo')])->isPromoted());
+        self::assertFalse($this->createCategory('visible', 'Visible', [new Tag('menu')])->isPromoted());
+    }
 
-        self::assertTrue($category->hasTagType(TagType::MENU()));
-        self::assertFalse($category->hasTagType(TagType::PROMO()));
+    public function testIsSearchableReturnsTrueOnlyForSearchableTaggedCategory(): void
+    {
+        self::assertTrue($this->createCategory('search', 'Search', [new Tag('searchable')])->isSearchable());
+        self::assertFalse($this->createCategory('visible', 'Visible', [new Tag('menu')])->isSearchable());
+    }
+
+    public function testIsRestrictedReturnsTrueOnlyForRestrictedTaggedCategory(): void
+    {
+        self::assertTrue($this->createCategory('staff', 'Staff', [new Tag('restricted:staff-only')])->isRestricted());
+        self::assertFalse($this->createCategory('visible', 'Visible', [new Tag('menu')])->isRestricted());
     }
 
     public function testIsRootReturnsTrueOnlyForRootTaggedCategory(): void

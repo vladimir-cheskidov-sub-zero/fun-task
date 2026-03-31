@@ -29,7 +29,7 @@
         "app"
     ],
     "scripts": {
-        "stan": "TMPDIR=cache/tmp COMPOSER_TMP_DIR=cache/tmp phpstan analyse --configuration=phpstan.neon.dist --debug --no-progress",
+        "stan": "TMPDIR=cache/tmp COMPOSER_TMP_DIR=cache/tmp phpstan analyse --configuration=phpstan.neon.dist --debug --no-progress  --memory-limit=2G",
         "cs": "TMPDIR=cache/tmp COMPOSER_TMP_DIR=cache/tmp php-cs-fixer fix --config=.php-cs-fixer.php --dry-run --diff",
         "cs:fix": "TMPDIR=cache/tmp COMPOSER_TMP_DIR=cache/tmp php-cs-fixer fix --config=.php-cs-fixer.php",
         "deptrac": "TMPDIR=cache/tmp COMPOSER_TMP_DIR=cache/tmp php vendor/qossmic/deptrac/deptrac.php analyse --config-file=deptrac.yaml --no-progress --no-cache",

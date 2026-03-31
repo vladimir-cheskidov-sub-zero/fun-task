@@ -85,6 +85,26 @@ final class EntryPointRunnerTest extends TestCase
         self::assertSame(['Application failed: Command failed.'], $messages);
     }
 
+    public function testRunSanitizesControlCharactersInNonVerboseMode(): void
+    {
+        $messages = [];
+
+        $runner = new EntryPointRunner(
+            static function (): Application {
+                throw new \RuntimeException("Broken\x1B\nmessage.");
+            },
+            static function (string $message) use (&$messages): void {
+                $messages[] = $message;
+            },
+            static function (): bool {
+                return false;
+            }
+        );
+
+        self::assertSame(1, $runner->run());
+        self::assertSame(['Application failed: Broken\\x1B\\x0Amessage.'], $messages);
+    }
+
     public function testRunOutputsFullExceptionInformationInVerboseMode(): void
     {
         $messages = [];
@@ -104,5 +124,26 @@ final class EntryPointRunnerTest extends TestCase
         self::assertSame(1, $runner->run());
         self::assertStringContainsString('Application failed:', $messages[0]);
         self::assertStringContainsString('RuntimeException: Verbose failure.', $messages[0]);
+    }
+
+    public function testRunSanitizesControlCharactersInVerboseMode(): void
+    {
+        $messages = [];
+
+        $runner = new EntryPointRunner(
+            static function (): Application {
+                throw new \RuntimeException("Verbose\x1B failure.");
+            },
+            static function (string $message) use (&$messages): void {
+                $messages[] = $message;
+            },
+            static function (): bool {
+                return true;
+            }
+        );
+
+        self::assertSame(1, $runner->run());
+        self::assertStringContainsString('Application failed:', $messages[0]);
+        self::assertStringContainsString('RuntimeException: Verbose\\x1B failure.', $messages[0]);
     }
 }

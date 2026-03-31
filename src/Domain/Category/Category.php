@@ -118,7 +118,19 @@ final class Category
     {
         return $this->hasTagType(TagType::HIDDEN());
     }
-    public function hasTagType(TagType $tagType): bool
+    public function isPromoted(): bool
+    {
+        return $this->hasTagType(TagType::PROMO());
+    }
+    public function isSearchable(): bool
+    {
+        return $this->hasTagType(TagType::SEARCHABLE());
+    }
+    public function isRestricted(): bool
+    {
+        return $this->hasTagType(TagType::RESTRICTED());
+    }
+    private function hasTagType(TagType $tagType): bool
     {
         foreach ($this->tags as $tag) {
             if ($tag->isOfType($tagType)) {

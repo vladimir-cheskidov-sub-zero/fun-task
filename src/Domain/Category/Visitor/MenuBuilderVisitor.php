@@ -23,8 +23,7 @@ final class MenuBuilderVisitor implements CategoryVisitor
     private array $menuItems = [];
     public function __construct(
         MenuCategoryVisibilitySpecification $menuCategoryVisibilitySpecification
-    )
-    {
+    ) {
         $this->menuCategoryVisibilitySpecification = $menuCategoryVisibilitySpecification;
     }
     public function enter(Category $category): void
