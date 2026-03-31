@@ -5,17 +5,10 @@ declare(strict_types=1);
 namespace FunTask\Domain\Category\Visitor;
 
 use FunTask\Domain\Category\Category;
-use FunTask\Domain\Category\Region;
-use FunTask\Domain\Category\RestrictedVisibility;
 
 final class MenuBuilderVisitor implements CategoryVisitor
 {
-    private const TAG_HIDDEN = 'hidden';
-    private const TAG_MENU = 'menu';
-    private const TAG_ROOT = 'root';
-    private bool $adultEnabled;
-    private Region $region;
-    private bool $staffEnabled;
+    private MenuCategoryVisibilitySpecification $menuCategoryVisibilitySpecification;
     /**
      * @var array<int, bool>
      */
@@ -28,18 +21,18 @@ final class MenuBuilderVisitor implements CategoryVisitor
      * @var BuiltMenuItem[]
      */
     private array $menuItems = [];
-    public function __construct(bool $adultEnabled, bool $staffEnabled, Region $region)
+    public function __construct(
+        MenuCategoryVisibilitySpecification $menuCategoryVisibilitySpecification
+    )
     {
-        $this->adultEnabled = $adultEnabled;
-        $this->region = $region;
-        $this->staffEnabled = $staffEnabled;
+        $this->menuCategoryVisibilitySpecification = $menuCategoryVisibilitySpecification;
     }
     public function enter(Category $category): void
     {
         $parentBranchIsVisible = empty($this->branchVisibilityStack)
             ? true
             : $this->branchVisibilityStack[count($this->branchVisibilityStack) - 1];
-        if ($this->hasTagValue($category, self::TAG_ROOT)) {
+        if ($category->isRoot()) {
             $this->branchVisibilityStack[] = true;
             $this->renderedItemsStack[] = null;
             return;
@@ -73,35 +66,7 @@ final class MenuBuilderVisitor implements CategoryVisitor
     }
     private function shouldRender(Category $category): bool
     {
-        if (!$this->hasTagValue($category, self::TAG_MENU)) {
-            return false;
-        }
-        if ($this->hasTagValue($category, self::TAG_HIDDEN)) {
-            return false;
-        }
-        if (!$this->staffEnabled && $this->hasTagValue($category, sprintf('restricted:%s', RestrictedVisibility::STAFF_ONLY()->getValue()))) {
-            return false;
-        }
-        if (!$this->adultEnabled && $this->hasTagValue($category, sprintf('restricted:%s', RestrictedVisibility::ADULTS_ONLY()->getValue()))) {
-            return false;
-        }
-        return $this->isVisibleForRegion($category);
-    }
-    private function isVisibleForRegion(Category $category): bool
-    {
-        if ($this->region->equals(Region::UNSPECIFIED())) {
-            return true;
-        }
-        $allowedRegionTag = sprintf('region:%s', $this->region->getValue());
-        foreach ($category->tags() as $tag) {
-            if (strpos($tag->value(), 'region:') !== 0) {
-                continue;
-            }
-            if ($tag->value() !== $allowedRegionTag) {
-                return false;
-            }
-        }
-        return true;
+        return $this->menuCategoryVisibilitySpecification->isSatisfiedBy($category);
     }
     private function currentParentItem(): ?BuiltMenuItem
     {
@@ -113,14 +78,5 @@ final class MenuBuilderVisitor implements CategoryVisitor
             return null;
         }
         return $parentItem;
-    }
-    private function hasTagValue(Category $category, string $tagValue): bool
-    {
-        foreach ($category->tags() as $tag) {
-            if ($tag->value() === $tagValue) {
-                return true;
-            }
-        }
-        return false;
     }
 }

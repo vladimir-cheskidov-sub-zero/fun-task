@@ -106,6 +106,54 @@ final class Category
     {
         return $this->tags->contains($tag);
     }
+    public function isRoot(): bool
+    {
+        return $this->hasTagType(TagType::ROOT());
+    }
+    public function isMenuItem(): bool
+    {
+        return $this->hasTagType(TagType::MENU());
+    }
+    public function isHidden(): bool
+    {
+        return $this->hasTagType(TagType::HIDDEN());
+    }
+    public function hasTagType(TagType $tagType): bool
+    {
+        foreach ($this->tags as $tag) {
+            if ($tag->isOfType($tagType)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public function hasRestrictedVisibility(RestrictedVisibility $visibility): bool
+    {
+        foreach ($this->tags as $tag) {
+            if (!$tag->isOfType(TagType::RESTRICTED())) {
+                continue;
+            }
+            if ($tag->restrictedVisibility()->equals($visibility)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public function isVisibleForRegion(Region $region): bool
+    {
+        if ($region->equals(Region::UNSPECIFIED())) {
+            return true;
+        }
+        foreach ($this->tags as $tag) {
+            if (!$tag->isOfType(TagType::REGION())) {
+                continue;
+            }
+            if (!$tag->region()->equals($region)) {
+                return false;
+            }
+        }
+        return true;
+    }
     public function accept(CategoryVisitor $visitor): void
     {
         $visitor->enter($this);

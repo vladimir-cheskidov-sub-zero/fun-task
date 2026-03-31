@@ -12,6 +12,7 @@ use FunTask\Domain\Category\ChildCategories;
 use FunTask\Domain\Category\Region;
 use FunTask\Domain\Category\Tag;
 use FunTask\Domain\Category\Visitor\MenuBuilderVisitor;
+use FunTask\Domain\Category\Visitor\MenuCategoryVisibilitySpecification;
 use PHPUnit\Framework\TestCase;
 
 final class MenuBuilderVisitorTest extends TestCase
@@ -42,7 +43,7 @@ final class MenuBuilderVisitorTest extends TestCase
                 $this->createCategory('tv', 'TV', ['menu']),
             ]
         );
-        $visitor = new MenuBuilderVisitor(false, false, Region::KG());
+        $visitor = new MenuBuilderVisitor(new MenuCategoryVisibilitySpecification(false, false, Region::KG()));
         $rootCategory->accept($visitor);
         $menuItems = $visitor->menuItems();
         self::assertSame(['electronics', 'tv'], array_map(static function ($item): string {
@@ -66,7 +67,7 @@ final class MenuBuilderVisitorTest extends TestCase
                 $this->createCategory('visible-ru', 'Visible RU', ['menu', 'region:ru']),
             ]
         );
-        $visitor = new MenuBuilderVisitor(false, false, Region::KG());
+        $visitor = new MenuBuilderVisitor(new MenuCategoryVisibilitySpecification(false, false, Region::KG()));
         $rootCategory->accept($visitor);
         self::assertSame(['visible-kg'], array_map(static function ($item): string {
             return $item->id();
@@ -83,7 +84,7 @@ final class MenuBuilderVisitorTest extends TestCase
                 $this->createCategory('visible-ru', 'Visible RU', ['menu', 'region:ru']),
             ]
         );
-        $visitor = new MenuBuilderVisitor(false, false, Region::UNSPECIFIED());
+        $visitor = new MenuBuilderVisitor(new MenuCategoryVisibilitySpecification(false, false, Region::UNSPECIFIED()));
         $rootCategory->accept($visitor);
         self::assertSame(['visible-kg', 'visible-ru'], array_map(static function ($item): string {
             return $item->id();

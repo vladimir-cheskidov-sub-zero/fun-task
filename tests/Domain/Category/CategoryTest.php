@@ -14,7 +14,10 @@ use FunTask\Domain\Category\Exception\CategoryCannotContainItself;
 use FunTask\Domain\Category\Exception\CategoryChildWasNotFound;
 use FunTask\Domain\Category\Exception\CategoryNameIsAlreadyUsed;
 use FunTask\Domain\Category\Exception\DuplicateCategoryTreeId;
+use FunTask\Domain\Category\Region;
+use FunTask\Domain\Category\RestrictedVisibility;
 use FunTask\Domain\Category\Tag;
+use FunTask\Domain\Category\TagType;
 use PHPUnit\Framework\TestCase;
 
 final class CategoryTest extends TestCase
@@ -49,6 +52,53 @@ final class CategoryTest extends TestCase
         $this->expectException(CategoryAlreadyHasTag::class);
 
         $this->createCategory('electronics', 'Electronics', [new Tag('menu')])->addTag(new Tag('menu'));
+    }
+
+    public function testHasTagTypeReturnsTrueWhenMatchingTagExists(): void
+    {
+        $category = $this->createCategory('electronics', 'Electronics', [new Tag('menu'), new Tag('hidden')]);
+
+        self::assertTrue($category->hasTagType(TagType::MENU()));
+        self::assertFalse($category->hasTagType(TagType::PROMO()));
+    }
+
+    public function testIsRootReturnsTrueOnlyForRootTaggedCategory(): void
+    {
+        self::assertTrue($this->createCategory('root', 'Catalog', [new Tag('root')])->isRoot());
+        self::assertFalse($this->createCategory('electronics', 'Electronics', [new Tag('menu')])->isRoot());
+    }
+    public function testIsMenuItemReturnsTrueOnlyForMenuTaggedCategory(): void
+    {
+        self::assertTrue($this->createCategory('electronics', 'Electronics', [new Tag('menu')])->isMenuItem());
+        self::assertFalse($this->createCategory('electronics', 'Electronics', [new Tag('hidden')])->isMenuItem());
+    }
+    public function testIsHiddenReturnsTrueOnlyForHiddenTaggedCategory(): void
+    {
+        self::assertTrue($this->createCategory('hidden', 'Hidden', [new Tag('hidden')])->isHidden());
+        self::assertFalse($this->createCategory('visible', 'Visible', [new Tag('menu')])->isHidden());
+    }
+
+    public function testHasRestrictedVisibilityReturnsTrueOnlyForMatchingRestriction(): void
+    {
+        $category = $this->createCategory('staff', 'Staff', [new Tag('restricted:staff-only')]);
+
+        self::assertTrue($category->hasRestrictedVisibility(RestrictedVisibility::STAFF_ONLY()));
+        self::assertFalse($category->hasRestrictedVisibility(RestrictedVisibility::ADULTS_ONLY()));
+    }
+
+    public function testIsVisibleForRegionReturnsTrueForMatchingRegion(): void
+    {
+        $category = $this->createCategory('kg', 'KG', [new Tag('region:kg')]);
+
+        self::assertTrue($category->isVisibleForRegion(Region::KG()));
+        self::assertFalse($category->isVisibleForRegion(Region::RU()));
+    }
+
+    public function testIsVisibleForRegionReturnsTrueWhenRegionIsUnspecified(): void
+    {
+        $category = $this->createCategory('kg', 'KG', [new Tag('region:kg')]);
+
+        self::assertTrue($category->isVisibleForRegion(Region::UNSPECIFIED()));
     }
 
     public function testAddChildReturnsNewCategory(): void
