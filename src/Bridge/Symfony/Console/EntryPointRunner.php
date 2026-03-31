@@ -25,9 +25,7 @@ final class EntryPointRunner
     public function run(): int
     {
         try {
-            $application = ($this->applicationLoader)();
-
-            return $application->run();
+            return ($this->applicationLoader)()->run();
         } catch (\Throwable $throwable) {
             ($this->errorWriter)($this->formatErrorMessage($throwable));
 
