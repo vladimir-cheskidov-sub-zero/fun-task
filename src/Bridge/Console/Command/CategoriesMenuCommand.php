@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FunTask\Bridge\Console\Command;
 
-use FunTask\Application\Category\BuildMenu;
-use FunTask\Application\Category\BuildMenuService;
+use FunTask\Application\Service\BuildMenu;
+use FunTask\Application\Service\BuildMenuService;
 use FunTask\Application\Dto\MenuDto;
 use FunTask\Application\Dto\MenuItemDto;
 use FunTask\Application\Vo\CategoryRegion;

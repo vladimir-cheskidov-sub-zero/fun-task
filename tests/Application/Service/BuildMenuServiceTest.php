@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace FunTask\tests\Application\Category;
+namespace FunTask\tests\Application\Service;
 
-use FunTask\Application\Category\BuildMenu;
-use FunTask\Application\Category\BuildMenuService;
+use FunTask\Application\Service\BuildMenu;
+use FunTask\Application\Service\BuildMenuService;
 use FunTask\Application\Dto\MenuAssembler;
 use FunTask\Application\Exception\BuildMenuFailed;
 use FunTask\Application\Vo\CategoryRegion;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FunTask\Application\Category;
+namespace FunTask\Application\Service;
 
 use FunTask\Application\Dto\MenuDto;
 use FunTask\Application\Dto\MenuAssembler;

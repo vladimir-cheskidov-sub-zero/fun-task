@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FunTask\Bridge\Container;
 
-use FunTask\Application\Category\BuildMenuService;
+use FunTask\Application\Service\BuildMenuService;
 use FunTask\Application\Dto\MenuAssembler;
 use FunTask\Bridge\Console\ApplicationFactory;
 use FunTask\Bridge\Console\Command\CategoriesMenuCommand;

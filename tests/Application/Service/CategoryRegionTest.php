@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace FunTask\Tests\Application\Category;
+namespace FunTask\Tests\Application\Service;
 
 use FunTask\Application\Vo\CategoryRegion;
 use FunTask\Domain\Category\Region;
 use PHPUnit\Framework\TestCase;
 
-final class BuildMenuRegionTest extends TestCase
+final class CategoryRegionTest extends TestCase
 {
     public function testToDomainRegionMapsSupportedValue(): void
     {

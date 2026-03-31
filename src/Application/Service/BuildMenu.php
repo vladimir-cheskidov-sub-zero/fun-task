@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FunTask\Application\Category;
+namespace FunTask\Application\Service;
 
 use FunTask\Application\Vo\CategoryRegion;
 use FunTask\Domain\Category\Region;
