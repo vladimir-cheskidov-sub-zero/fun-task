@@ -11,20 +11,9 @@ use Symfony\Component\DependencyInjection\Exception\ExceptionInterface;
 
 final class EntryPointRunner
 {
-    /**
-     * @var Closure
-     */
-    private $applicationLoader;
-
-    /**
-     * @var Closure
-     */
-    private $errorWriter;
-
-    /**
-     * @var Closure
-     */
-    private $verbosityResolver;
+    private Closure $applicationLoader;
+    private Closure $errorWriter;
+    private Closure $verbosityResolver;
 
     public function __construct(Closure $applicationLoader, Closure $errorWriter, Closure $verbosityResolver)
     {
