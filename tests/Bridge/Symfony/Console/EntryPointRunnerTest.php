@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FunTask\Tests\Bridge\Console;
 
-use FunTask\Bridge\Console\EntryPointRunner;
+use FunTask\Bridge\Symfony\Console\EntryPointRunner;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace FunTask\Bridge\Console;
+namespace FunTask\Bridge\Symfony\Console;
 
 use Closure;
-use FunTask\Bridge\Container\ContainerFactory;
+use FunTask\Bridge\Symfony\Container\ContainerFactory;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\Exception\ExceptionInterface;
 

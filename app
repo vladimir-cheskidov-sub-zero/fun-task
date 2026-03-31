@@ -5,6 +5,6 @@ declare(strict_types=1);
 
 require __DIR__ . '/vendor/autoload.php';
 
-use FunTask\Bridge\Console\EntryPointRunner;
+use FunTask\Bridge\Symfony\Console\EntryPointRunner;
 
 exit(EntryPointRunner::createDefault()->run());

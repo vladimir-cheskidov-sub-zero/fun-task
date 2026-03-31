@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace FunTask\Tests\Bridge\Console\Command;
 
-use FunTask\Application\Service\BuildMenuService;
 use FunTask\Application\Dto\MenuAssembler;
-use FunTask\Bridge\Console\Command\CategoriesMenuCommand;
+use FunTask\Application\Service\BuildMenuService;
+use FunTask\Bridge\Symfony\Console\Command\CategoriesMenuCommand;
 use FunTask\Domain\Category\Category;
 use FunTask\Domain\Category\CategoryHydrator;
 use FunTask\Domain\Category\CategoryId;

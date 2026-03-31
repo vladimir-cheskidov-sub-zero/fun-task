@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FunTask\Bridge\Console;
+namespace FunTask\Bridge\Symfony\Console;
 
 use Symfony\Component\Console\Application;
 

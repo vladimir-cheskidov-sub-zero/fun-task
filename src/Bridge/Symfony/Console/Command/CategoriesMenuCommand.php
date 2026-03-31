@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace FunTask\Bridge\Console\Command;
+namespace FunTask\Bridge\Symfony\Console\Command;
 
-use FunTask\Application\Service\BuildMenu;
-use FunTask\Application\Service\BuildMenuService;
 use FunTask\Application\Dto\MenuDto;
 use FunTask\Application\Dto\MenuItemDto;
+use FunTask\Application\Service\BuildMenu;
+use FunTask\Application\Service\BuildMenuService;
 use FunTask\Application\Vo\CategoryRegion;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidArgumentException;

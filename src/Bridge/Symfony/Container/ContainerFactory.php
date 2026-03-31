@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace FunTask\Bridge\Container;
+namespace FunTask\Bridge\Symfony\Container;
 
-use FunTask\Application\Service\BuildMenuService;
 use FunTask\Application\Dto\MenuAssembler;
-use FunTask\Bridge\Console\ApplicationFactory;
-use FunTask\Bridge\Console\Command\CategoriesMenuCommand;
+use FunTask\Application\Service\BuildMenuService;
+use FunTask\Bridge\Symfony\Console\ApplicationFactory;
+use FunTask\Bridge\Symfony\Console\Command\CategoriesMenuCommand;
 use FunTask\Domain\Category\CategoryHydrator;
 use FunTask\Infrastructure\Category\JsonFileCategoryHydrator;
 use Symfony\Component\Console\Application;
