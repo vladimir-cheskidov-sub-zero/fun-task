@@ -151,16 +151,30 @@ final class Category
         }
         return false;
     }
+    /**
+     * @return Region[]
+     */
+    public function regions(): array
+    {
+        $regions = [];
+
+        foreach ($this->tags as $tag) {
+            if (!$tag->isOfType(TagType::REGION())) {
+                continue;
+            }
+
+            $regions[] = $tag->region();
+        }
+
+        return $regions;
+    }
     public function isVisibleForRegion(Region $region): bool
     {
         if ($region->equals(Region::UNSPECIFIED())) {
             return true;
         }
-        foreach ($this->tags as $tag) {
-            if (!$tag->isOfType(TagType::REGION())) {
-                continue;
-            }
-            if (!$tag->region()->equals($region)) {
+        foreach ($this->regions() as $categoryRegion) {
+            if (!$categoryRegion->equals($region)) {
                 return false;
             }
         }

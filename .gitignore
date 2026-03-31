@@ -3,3 +3,5 @@
 /vendor/
 /cache/**
 !/cache/**/.gitkeep
+/export/**
+!/export/.gitkeep

@@ -95,6 +95,22 @@ final class CategoryTest extends TestCase
         self::assertFalse($category->hasRestrictedVisibility(RestrictedVisibility::ADULTS_ONLY()));
     }
 
+    public function testRegionsReturnsOnlyRegionalTagsInOriginalOrder(): void
+    {
+        $category = $this->createCategory(
+            'regional',
+            'Regional',
+            [new Tag('menu'), new Tag('region:kg'), new Tag('searchable'), new Tag('region:ru')]
+        );
+
+        self::assertSame(
+            ['kg', 'ru'],
+            array_map(static function (Region $region): string {
+                return $region->getValue();
+            }, $category->regions())
+        );
+    }
+
     public function testIsVisibleForRegionReturnsTrueForMatchingRegion(): void
     {
         $category = $this->createCategory('kg', 'KG', [new Tag('region:kg')]);
