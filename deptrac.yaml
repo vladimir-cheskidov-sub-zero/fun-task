@@ -32,7 +32,6 @@ deptrac:
           value: '#^MyCLabs\\Enum\\.*#'
   ruleset:
     Domain:
-      - MyCLabsEnum
       - CoreVendor
     Application:
       - Domain
